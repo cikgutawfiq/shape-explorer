@@ -1,7 +1,8 @@
 import { SHAPES, byId } from './shapes.js';
 import { Viewer } from './viewer.js';
 import { initShapes2D } from './shapes2d.js';
-import { initQuiz } from './quiz.js';
+import { initGames } from './games.js';
+import { hideCount, showCount } from './ui.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -40,9 +41,9 @@ const stage = $('#stage');
 const el = {
   picker: $('#picker'), select: $('#shapeSelect'), fold: $('#fold'), play: $('#btnPlay'),
   sidesField: $('#sidesField'), sides: $('#sides'), sidesVal: $('#sidesVal'),
-  hud: $('#hud'), toast: $('#toast'), full: $('#btnFull'), reset: $('#btnReset'), sound: $('#btnSound'),
+  hud: $('#hud'), toast: $('#toast'), full: $('#btnFull'), reset: $('#btnReset'),
 };
-const state = { id: 'cube', sides: { prism: 3, pyramid: 4 }, anim: null, sound: store.get('sound') === '1' };
+const state = { id: 'cube', sides: { prism: 3, pyramid: 4 }, anim: null };
 let viewer = null;
 
 const setFill = (input) => {
@@ -113,8 +114,7 @@ function selectShape(id, { keepView = false } = {}) {
   setFold(1);
   updateInfo(s, sides, counts);
   if (s.noUnfold) toast('A sphere can’t be unfolded flat. It is curved everywhere!', 3600);
-  const tail = id === 'prism' || id === 'pyramid' ? `/${id}` : `/${id}`;
-  history.replaceState(null, '', `#3d${tail}`);
+  if (/^(#3d.*)?$/.test(location.hash)) history.replaceState(null, '', `#3d/${id}`);
 }
 
 function updateInfo(s, sides, counts) {
@@ -126,73 +126,47 @@ function updateInfo(s, sides, counts) {
   $('#examples').innerHTML = s.examples.map(([e, t]) => `<li><span class="em" aria-hidden="true">${e}</span>${t}</li>`).join('');
   const poly = counts.curved === 0;
   $('#euler').hidden = !poly;
-  if (poly) $('#euler').textContent = `Faces + Vertices − Edges = ${counts.faces} + ${counts.vertices} − ${counts.edges} = ${counts.faces + counts.vertices - counts.edges}`;
+  if (poly) $('#euler').textContent = 'Count them all, then try: Faces + Vertices − Edges. What do you get?';
   $$('.chip', el.hud).forEach((c) => {
     const kind = c.dataset.kind;
     c.hidden = kind === 'curved' && counts.curved === 0;
-    c.querySelector('b').textContent = counts[kind];
-    c.querySelector('span').textContent = WORD[kind][counts[kind] === 1 ? 0 : 1].replace(/^./, (x) => x.toUpperCase()).replace('Curved surfaces', 'Curved').replace('Curved surface', 'Curved');
-    c.classList.remove('on');
-    c.classList.toggle('zero', counts[kind] === 0);
-    c.setAttribute('aria-pressed', 'false');
+    hideCount(c);
+    c.querySelector('span').textContent = { faces: 'Faces', edges: 'Edges', vertices: 'Vertices', curved: 'Curved' }[kind];
   });
-  const curvedNote = counts.curved ? ` and ${counts.curved} curved surface${counts.curved > 1 ? 's' : ''}` : '';
-  el.hud.setAttribute('aria-label', `${name}: ${counts.faces} flat faces${curvedNote}, ${counts.edges} edges, ${counts.vertices} vertices`);
+  el.hud.setAttribute('aria-label', `Tap to count the faces, edges and vertices of the ${name.toLowerCase()}`);
 }
 
 /* counting chips */
 const WORD = { faces: ['face', 'faces'], edges: ['edge', 'edges'], vertices: ['vertex', 'vertices'], curved: ['curved surface', 'curved surfaces'] };
-function speak(text) {
-  if (!state.sound || !('speechSynthesis' in window)) return;
-  try {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.95; u.pitch = 1.1;
-    speechSynthesis.speak(u);
-  } catch { /* ignore */ }
-}
-
 function onCount(kind, n, total, done) {
   const chip = $(`.chip[data-kind="${kind}"]`, el.hud);
   if (!chip) return;
-  chip.querySelector('b').textContent = n;
-  if (done) {
-    const w = WORD[kind][total === 1 ? 0 : 1];
-    speak(`${total} ${w}`);
-    if (total > 0) toast(`${total} ${w}!`, 2200);
-  } else speak(String(n));
+  showCount(chip, n);
+  if (done && total > 0) toast(`${total} ${WORD[kind][total === 1 ? 0 : 1]}!`, 2200);
 }
 
-function resetChips() {
-  const counts = viewer.counts;
-  $$('.chip', el.hud).forEach((c) => {
-    c.classList.remove('on');
-    c.setAttribute('aria-pressed', 'false');
-    c.querySelector('b').textContent = counts[c.dataset.kind];
-  });
-}
+function resetChips() { $$('.chip', el.hud).forEach(hideCount); }
 
 async function toggleCount(kind) {
-  const cur = viewer.counting;
-  if (cur && cur.kind === kind) { viewer.clearCount(); resetChips(); return; }
+  const chip = $(`.chip[data-kind="${kind}"]`, el.hud);
+  // tapping an open chip hides the answer again
+  if (chip.classList.contains('on')) { viewer.clearCount(); resetChips(); return; }
   viewer.clearCount();
   resetChips();
   const total = viewer.counts[kind];
-  const s = byId(state.id);
-  if (total === 0) {
-    toast(`${s.name(state.sides[state.id])} has no ${WORD[kind][1]}!`);
-    return;
-  }
-  const chip = $(`.chip[data-kind="${kind}"]`, el.hud);
   chip.classList.add('on');
   chip.setAttribute('aria-pressed', 'true');
+  if (total === 0) {
+    showCount(chip, 0);
+    toast(`${byId(state.id).name(state.sides[state.id])} has no ${WORD[kind][1]}!`);
+    return;
+  }
+  showCount(chip, 0);
   if ((kind === 'edges' || kind === 'vertices') && viewer.fold < 0.98) {
     toast('Let’s fold it up first…', 2000);
-    chip.querySelector('b').textContent = 0;
     const ok = await animateFold(1, 1400);
     if (!ok || !chip.classList.contains('on')) return;
   }
-  chip.querySelector('b').textContent = 0;
   viewer.startCount(kind);
 }
 
@@ -253,13 +227,6 @@ function initViewer() {
   $$('.chip', el.hud).forEach((c) => c.addEventListener('click', () => toggleCount(c.dataset.kind)));
   el.full.addEventListener('click', toggleFull);
   el.reset.addEventListener('click', () => viewer.resetView());
-  el.sound.setAttribute('aria-pressed', state.sound);
-  el.sound.addEventListener('click', () => {
-    state.sound = !state.sound;
-    el.sound.setAttribute('aria-pressed', state.sound);
-    store.set('sound', state.sound ? '1' : '0');
-    if (state.sound) speak('Sound on'); else speechSynthesis?.cancel();
-  });
   return true;
 }
 
@@ -275,7 +242,7 @@ function route() {
 
 const ok = initViewer();
 twoD = initShapes2D({ go3d: (id) => { showTab('3d'); if (ok) selectShape(id); } });
-initQuiz($('#quiz'), { go: showTab });
+initGames($('#games'));
 
 const start = location.hash.slice(1).split('/');
 const first = start[0] === '3d' && byId(start[1]) ? start[1] : 'cube';

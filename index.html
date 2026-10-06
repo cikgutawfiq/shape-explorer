@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f8f7d">
-  <title>Shape Explorer – Fold &amp; Unfold Geometry</title>
+  <title>Geometry3D – Fold &amp; Unfold Shapes</title>
   <meta name="description" content="Explore 2D and 3D shapes. Fold and unfold cubes, prisms, pyramids, cylinders and cones, then count faces, edges and vertices. Made for primary school students.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,14 +19,14 @@
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="top">
-    <a class="brand" href="#3d" aria-label="Shape Explorer home">
+    <a class="brand" href="#3d" aria-label="Geometry3D home">
       <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M24 4 42 14v20L24 44 6 34V14z" fill="#2aa392"/><path d="M24 4 42 14 24 24 6 14z" fill="#7be0cd"/><path d="M24 24v20L6 34V14z" fill="#4f86e0"/></svg>
-      <span>Shape Explorer</span>
+      <span>Geometry3D</span>
     </a>
     <nav class="tabs" role="tablist" aria-label="Sections">
-      <button role="tab" id="t-3d" data-tab="3d" aria-selected="true" aria-controls="tab-3d"><span aria-hidden="true">🧊</span> 3D Shapes</button>
-      <button role="tab" id="t-2d" data-tab="2d" aria-selected="false" aria-controls="tab-2d" tabindex="-1"><span aria-hidden="true">🔷</span> 2D Shapes</button>
-      <button role="tab" id="t-quiz" data-tab="quiz" aria-selected="false" aria-controls="tab-quiz" tabindex="-1"><span aria-hidden="true">⭐</span> Quiz</button>
+      <button role="tab" id="t-3d" data-tab="3d" aria-selected="true" aria-controls="tab-3d"><span aria-hidden="true">🧊</span><span class="lg">3D Shapes</span><span class="sm">3D</span></button>
+      <button role="tab" id="t-2d" data-tab="2d" aria-selected="false" aria-controls="tab-2d" tabindex="-1"><span aria-hidden="true">🔷</span><span class="lg">2D Shapes</span><span class="sm">2D</span></button>
+      <button role="tab" id="t-quiz" data-tab="quiz" aria-selected="false" aria-controls="tab-quiz" tabindex="-1"><span aria-hidden="true">🎮</span>Games</button>
     </nav>
   </header>
 
@@ -38,6 +38,7 @@
 
       <div class="picker" id="picker" role="listbox" aria-label="Choose a 3D shape"></div>
 
+      <div class="dash">
       <div class="stage" id="stage">
         <div class="gl-host" id="glHost">
           <div class="labels" id="labels" aria-hidden="true"></div>
@@ -54,9 +55,6 @@
             </button>
             <button class="tool" id="btnReset" aria-label="Reset view" title="Reset view">
               <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-            </button>
-            <button class="tool" id="btnSound" aria-label="Read numbers aloud" aria-pressed="false" title="Read numbers aloud">
-              <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L13 19V5L7.5 9.5z" fill="currentColor"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path class="mute" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
             </button>
           </div>
           <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -111,6 +109,7 @@
           <p id="funFact"></p>
         </article>
       </div>
+      </div>
     </section>
 
     <!-- ============================== 2D ============================== -->
@@ -120,6 +119,7 @@
 
       <div class="picker pills" id="pills2d" role="listbox" aria-label="Choose a 2D shape"></div>
 
+      <div class="dash">
       <div class="stage two">
         <div class="gl-host svg-host">
           <div class="hud" id="hud2d">
@@ -156,17 +156,18 @@
           </ul>
         </article>
       </div>
+      </div>
     </section>
 
     <!-- ============================== QUIZ ============================== -->
     <section id="tab-quiz" class="panel" role="tabpanel" aria-labelledby="t-quiz" hidden>
-      <h1>Shape Quiz</h1>
-      <p class="note"><span class="ico" aria-hidden="true">i</span><span>Ten quick questions. Not sure? Go back and explore the shape, then come and try again!</span></p>
-      <div class="quiz card" id="quiz"></div>
+      <h1>Shape Games</h1>
+      <p class="note"><span class="ico" aria-hidden="true">i</span><span>Play a quiz, flip memory cards or match shapes to their clues. Not sure? Go back and explore the shape first!</span></p>
+      <div class="card games" id="games"></div>
     </section>
   </main>
 
-  <footer>Made for curious young mathematicians. Drag to turn shapes, pinch to zoom.</footer>
+  <footer>Geometry3D build by <a href="https://cikgutawfiq.com" target="_blank" rel="noopener">CikguTawfiq.com</a></footer>
 
   <script type="module" src="js/main.js"></script>
 </body>

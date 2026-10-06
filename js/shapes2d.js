@@ -1,5 +1,6 @@
 // 2D shape explorer (SVG).
 import { SHAPES_2D, byId } from './shapes.js';
+import { hideCount, showCount } from './ui.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const C = 200;
@@ -55,10 +56,7 @@ export function initShapes2D({ go3d }) {
     svg.querySelectorAll('.marks, .symlines').forEach((g) => (g.innerHTML = ''));
     svg.querySelectorAll('.rmark').forEach((r) => r.setAttribute('opacity', 0));
     svg.querySelectorAll('.side.hot').forEach((s) => s.classList.remove('hot'));
-    hud.querySelectorAll('.chip').forEach((c) => {
-      c.classList.remove('on');
-      c.querySelector('b').textContent = cur[c.dataset.kind === 'sym' ? 'sym' : c.dataset.kind];
-    });
+    hud.querySelectorAll('.chip').forEach(hideCount);
   }
 
   function draw() {
@@ -125,13 +123,14 @@ export function initShapes2D({ go3d }) {
     stopCount();
     const chip = hud.querySelector(`[data-kind="${kind}"]`);
     const total = cur[kind];
+    chip.classList.add('on');
+    chip.setAttribute('aria-pressed', 'true');
     if (total === 0 || (kind === 'sym' && cur.circle)) {
-      if (cur.circle && kind === 'sym') toast('A circle has endless lines of symmetry!');
-      else toast(`A ${cur.name.toLowerCase()} has no ${WORD[kind][1]}!`);
+      if (cur.circle && kind === 'sym') { showCount(chip, '∞'); toast('A circle has endless lines of symmetry!'); }
+      else { showCount(chip, 0); toast(`A ${cur.name.toLowerCase()} has no ${WORD[kind][1]}!`); }
       return;
     }
-    chip.classList.add('on');
-    chip.querySelector('b').textContent = 0;
+    showCount(chip, 0);
     active = kind;
     const marks = svg.querySelector('.marks');
     const pts = pointsFor(cur);
@@ -142,7 +141,7 @@ export function initShapes2D({ go3d }) {
 
     const step = () => {
       n++;
-      chip.querySelector('b').textContent = n;
+      showCount(chip, n);
       const gp = svgEl('g', { class: 'pop' }, marks);
       if (kind === 'sides') {
         svg.querySelector(`#side-${n - 1}`).classList.add('hot');
@@ -187,12 +186,7 @@ export function initShapes2D({ go3d }) {
     draw();
     // clear any old right-angle marks visibility
     pills.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', b.dataset.id === cur.id));
-    hud.querySelectorAll('.chip').forEach((c) => {
-      const k = c.dataset.kind;
-      c.querySelector('b').textContent = cur[k];
-      c.classList.toggle('zero', !cur[k]);
-      c.classList.remove('on');
-    });
+    hud.querySelectorAll('.chip').forEach(hideCount);
     document.getElementById('name2d').textContent = cur.name;
     document.getElementById('blurb2d').textContent = cur.blurb;
     document.getElementById('examples2d').innerHTML = cur.examples.map(([e, t]) => `<li><span class="em" aria-hidden="true">${e}</span>${t}</li>`).join('');

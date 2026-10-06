@@ -1,15 +1,15 @@
-# Shape Explorer
+# Geometry3D
 
 An interactive geometry site for primary school students. Fold and unfold 3D shapes into their nets, count faces, edges and vertices, explore flat 2D shapes, then test yourself with a quiz.
 
 ## Features
 
 - **Unfold / fold slider** for the cube, cuboid, prisms (3–8 sides), pyramids (3–8 sides), cylinder and cone, with a play button and a short welcome animation.
-- **Count along**: tap *Faces*, *Edges* or *Vertices* and numbers appear one by one on the shape (hidden ones are dimmed). Optional read-aloud.
+- **Count along**: tap *Faces*, *Edges* or *Vertices* and numbers appear one by one on the shape (hidden ones are dimmed).
 - **Spin and zoom** with mouse, touch or pinch. **Full screen** button (with an in-page fallback for iPhone).
 - **Spot it in real life** examples, a "Did you know?" fact and Euler's formula for every solid.
 - **2D shapes** with side/corner counting, right angles and lines of symmetry, plus links to the 3D shapes that contain them.
-- **Quiz**: 10 random questions, instant feedback and a star score.
+- **Games**: a 10-question quiz, a memory card game and a match-the-pairs game.
 - Mobile first, keyboard accessible, respects reduced-motion.
 
 ## How the unfolding works
