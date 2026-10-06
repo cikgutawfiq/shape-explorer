@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f8f7d">
+  <title>Shape Explorer – Fold &amp; Unfold Geometry</title>
+  <meta name="description" content="Explore 2D and 3D shapes. Fold and unfold cubes, prisms, pyramids, cylinders and cones, then count faces, edges and vertices. Made for primary school students.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/" } }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="top">
+    <a class="brand" href="#3d" aria-label="Shape Explorer home">
+      <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M24 4 42 14v20L24 44 6 34V14z" fill="#2aa392"/><path d="M24 4 42 14 24 24 6 14z" fill="#7be0cd"/><path d="M24 24v20L6 34V14z" fill="#4f86e0"/></svg>
+      <span>Shape Explorer</span>
+    </a>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" id="t-3d" data-tab="3d" aria-selected="true" aria-controls="tab-3d"><span aria-hidden="true">🧊</span> 3D Shapes</button>
+      <button role="tab" id="t-2d" data-tab="2d" aria-selected="false" aria-controls="tab-2d" tabindex="-1"><span aria-hidden="true">🔷</span> 2D Shapes</button>
+      <button role="tab" id="t-quiz" data-tab="quiz" aria-selected="false" aria-controls="tab-quiz" tabindex="-1"><span aria-hidden="true">⭐</span> Quiz</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============================== 3D ============================== -->
+    <section id="tab-3d" class="panel" role="tabpanel" aria-labelledby="t-3d">
+      <h1>Unfolding Shapes in 3D</h1>
+      <p class="note"><span class="ico" aria-hidden="true">i</span><span class="long">Explore the geometry of prisms, pyramids, cylinders and cones by unfolding them. Drag to spin the shape, pinch or scroll to zoom, then tap <b>Faces</b>, <b>Edges</b> or <b>Vertices</b> to count them.</span><span class="short">Drag to spin, pinch to zoom, and tap <b>Faces</b>, <b>Edges</b> or <b>Vertices</b> to count.</span></p>
+
+      <div class="picker" id="picker" role="listbox" aria-label="Choose a 3D shape"></div>
+
+      <div class="stage" id="stage">
+        <div class="gl-host" id="glHost">
+          <div class="labels" id="labels" aria-hidden="true"></div>
+          <div class="hud" id="hud">
+            <button class="chip" data-kind="faces"><b>0</b><span>Faces</span></button>
+            <button class="chip" data-kind="edges"><b>0</b><span>Edges</span></button>
+            <button class="chip" data-kind="vertices"><b>0</b><span>Vertices</span></button>
+            <button class="chip" data-kind="curved"><b>0</b><span>Curved</span></button>
+          </div>
+          <div class="tools">
+            <button class="tool" id="btnFull" aria-label="Full screen" title="Full screen">
+              <svg viewBox="0 0 24 24" class="i-enter"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" class="i-exit"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="tool" id="btnReset" aria-label="Reset view" title="Reset view">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </button>
+            <button class="tool" id="btnSound" aria-label="Read numbers aloud" aria-pressed="false" title="Read numbers aloud">
+              <svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L13 19V5L7.5 9.5z" fill="currentColor"/><path class="waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path class="mute" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+          <p class="nogl" id="noGl" hidden>Your browser could not start 3D graphics. Try updating it, or open this page in Chrome, Edge, Safari or Firefox.</p>
+        </div>
+
+        <div class="bar">
+          <label class="field pick">
+            <span class="sr">Shape</span>
+            <select id="shapeSelect"></select>
+          </label>
+
+          <div class="field fold">
+            <div class="ends"><span>Unfold</span><span>Fold</span></div>
+            <input id="fold" type="range" min="0" max="1" step="0.001" value="1" aria-label="Fold or unfold the shape">
+          </div>
+
+          <button class="play" id="btnPlay" type="button">Unfold</button>
+
+          <div class="field sides" id="sidesField" hidden>
+            <output id="sidesVal" for="sides">3</output>
+            <input id="sides" type="range" min="3" max="8" step="1" value="3" aria-label="Number of sides">
+            <span class="cap">Sides</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card about">
+          <h2 id="aboutName">Cube</h2>
+          <p id="aboutBlurb"></p>
+          <p class="net"><span class="pill">Its net</span> <span id="aboutNet"></span></p>
+        </article>
+
+        <article class="card words">
+          <h2>Maths words</h2>
+          <ul class="defs">
+            <li><i class="dot f"></i><b>Face</b> a flat surface of a shape. <span class="dim">A curved surface is not a flat face.</span></li>
+            <li><i class="dot e"></i><b>Edge</b> where two faces meet.</li>
+            <li><i class="dot v"></i><b>Vertex</b> a corner where edges meet. <span class="dim">Many are called vertices.</span></li>
+          </ul>
+          <p class="euler" id="euler"></p>
+        </article>
+
+        <article class="card real">
+          <h2>Spot it in real life</h2>
+          <ul class="examples" id="examples"></ul>
+        </article>
+
+        <article class="card fun">
+          <h2>Did you know?</h2>
+          <p id="funFact"></p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================== 2D ============================== -->
+    <section id="tab-2d" class="panel" role="tabpanel" aria-labelledby="t-2d" hidden>
+      <h1>Flat 2D Shapes</h1>
+      <p class="note"><span class="ico" aria-hidden="true">i</span><span>Flat shapes have sides and corners but no thickness. Pick a shape, then tap <b>Sides</b> or <b>Corners</b> to count them.</span></p>
+
+      <div class="picker pills" id="pills2d" role="listbox" aria-label="Choose a 2D shape"></div>
+
+      <div class="stage two">
+        <div class="gl-host svg-host">
+          <div class="hud" id="hud2d">
+            <button class="chip" data-kind="sides"><b>0</b><span>Sides</span></button>
+            <button class="chip" data-kind="corners"><b>0</b><span>Corners</span></button>
+            <button class="chip" data-kind="right"><b>0</b><span>Right angles</span></button>
+            <button class="chip" data-kind="sym"><b>0</b><span>Symmetry</span></button>
+          </div>
+          <svg id="svg2d" viewBox="0 0 400 400" role="img" aria-label="The selected 2D shape"></svg>
+          <div class="toast" id="toast2d" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card about">
+          <h2 id="name2d">Triangle</h2>
+          <p id="blurb2d"></p>
+        </article>
+        <article class="card real">
+          <h2>Spot it in real life</h2>
+          <ul class="examples" id="examples2d"></ul>
+        </article>
+        <article class="card words">
+          <h2>Find it in 3D</h2>
+          <ul class="goto" id="goto3d"></ul>
+        </article>
+        <article class="card fun">
+          <h2>Maths words</h2>
+          <ul class="defs">
+            <li><i class="dot e"></i><b>Side</b> a straight line that is part of the shape.</li>
+            <li><i class="dot v"></i><b>Corner</b> where two sides meet.</li>
+            <li><i class="dot f"></i><b>Right angle</b> a square corner, like the corner of a book.</li>
+            <li><i class="dot s"></i><b>Line of symmetry</b> a fold line where both halves match exactly.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================== QUIZ ============================== -->
+    <section id="tab-quiz" class="panel" role="tabpanel" aria-labelledby="t-quiz" hidden>
+      <h1>Shape Quiz</h1>
+      <p class="note"><span class="ico" aria-hidden="true">i</span><span>Ten quick questions. Not sure? Go back and explore the shape, then come and try again!</span></p>
+      <div class="quiz card" id="quiz"></div>
+    </section>
+  </main>
+
+  <footer>Made for curious young mathematicians. Drag to turn shapes, pinch to zoom.</footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

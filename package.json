@@ -1,0 +1,15 @@
+{
+  "name": "shape-explorer",
+  "version": "1.0.0",
+  "description": "Interactive 2D & 3D geometry explorer for primary school students — fold and unfold shapes in 3D.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "serve": "npx --yes serve . -l 5173",
+    "test": "node scripts/test-nets.mjs"
+  },
+  "devDependencies": {
+    "three": "^0.186.1"
+  }
+}
