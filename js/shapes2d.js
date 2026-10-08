@@ -43,7 +43,7 @@ export function initShapes2D({ go3d }) {
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
   };
 
-  pills.innerHTML = SHAPES_2D.map((s) => `<button role="option" data-id="${s.id}" aria-selected="false"><span class="em" aria-hidden="true">${s.icon}</span>${s.name}</button>`).join('');
+  pills.innerHTML = SHAPES_2D.map((s) => `<button role="option" data-id="${s.id}" aria-selected="false">${s.name}</button>`).join('');
   pills.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-id]');
     if (b) select(b.dataset.id);

@@ -23,6 +23,9 @@ function showTab(name, { push = true } = {}) {
     $(`#tab-${t.dataset.tab}`).hidden = !on;
   });
   if (push && location.hash.slice(1).split('/')[0] !== name) history.replaceState(null, '', `#${name}`);
+  $('#picker').hidden = name !== '3d';
+  $('#pills2d').hidden = name !== '2d';
+  $('.hdr-pick').hidden = name === 'quiz';
   if (name === '3d') requestAnimationFrame(() => viewer?.resize());
   if (name === '2d') twoD?.show();
   window.scrollTo({ top: 0 });
@@ -60,7 +63,7 @@ function toast(msg, ms = 2600) {
 }
 
 function buildPicker() {
-  el.picker.innerHTML = SHAPES.map((s) => `<button role="option" data-id="${s.id}" aria-selected="false"><span class="em" aria-hidden="true">${s.icon}</span>${s.id === 'prism' ? 'Prism' : s.id === 'pyramid' ? 'Pyramid' : s.name()}</button>`).join('');
+  el.picker.innerHTML = SHAPES.map((s) => `<button role="option" data-id="${s.id}" aria-selected="false">${s.id === 'prism' ? 'Prism' : s.id === 'pyramid' ? 'Pyramid' : s.name()}</button>`).join('');
   el.select.innerHTML = SHAPES.map((s) => `<option value="${s.id}">${s.id === 'prism' ? 'Prism' : s.id === 'pyramid' ? 'Pyramid' : s.name()}</option>`).join('');
   el.picker.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-id]');
@@ -103,7 +106,9 @@ function selectShape(id, { keepView = false } = {}) {
   const sides = state.sides[id] ?? s.defaultSides;
   const counts = viewer.setShape(id, sides, { keepFold: false, keepView });
   el.select.value = id;
-  $$('#picker button').forEach((b) => b.setAttribute('aria-selected', b.dataset.id === id));
+  $('#picker button').forEach((b) => b.setAttribute('aria-selected', b.dataset.id === id));
+  const on = $('#picker button[aria-selected="true"]');
+  if (on) el.picker.scrollTo({ left: on.offsetLeft - (el.picker.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' });
   el.sidesField.hidden = !s.hasSides;
   if (s.hasSides) {
     el.sides.min = s.sides[0]; el.sides.max = s.sides[1]; el.sides.value = sides;

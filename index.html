@@ -23,6 +23,10 @@
       <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M24 4 42 14v20L24 44 6 34V14z" fill="#2aa392"/><path d="M24 4 42 14 24 24 6 14z" fill="#7be0cd"/><path d="M24 24v20L6 34V14z" fill="#4f86e0"/></svg>
       <span>Geometry3D</span>
     </a>
+    <div class="hdr-pick">
+      <div class="picker" id="picker" role="listbox" aria-label="Choose a 3D shape"></div>
+      <div class="picker" id="pills2d" role="listbox" aria-label="Choose a 2D shape" hidden></div>
+    </div>
     <nav class="tabs" role="tablist" aria-label="Sections">
       <button role="tab" id="t-3d" data-tab="3d" aria-selected="true" aria-controls="tab-3d"><span aria-hidden="true">🧊</span><span class="lg">3D Shapes</span><span class="sm">3D</span></button>
       <button role="tab" id="t-2d" data-tab="2d" aria-selected="false" aria-controls="tab-2d" tabindex="-1"><span aria-hidden="true">🔷</span><span class="lg">2D Shapes</span><span class="sm">2D</span></button>
@@ -35,8 +39,6 @@
     <section id="tab-3d" class="panel" role="tabpanel" aria-labelledby="t-3d">
       <h1>Unfolding Shapes in 3D</h1>
       <p class="note"><span class="ico" aria-hidden="true">i</span><span class="long">Explore the geometry of prisms, pyramids, cylinders and cones by unfolding them. Drag to spin the shape, pinch or scroll to zoom, then tap <b>Faces</b>, <b>Edges</b> or <b>Vertices</b> to count them.</span><span class="short">Drag to spin, pinch to zoom, and tap <b>Faces</b>, <b>Edges</b> or <b>Vertices</b> to count.</span></p>
-
-      <div class="picker" id="picker" role="listbox" aria-label="Choose a 3D shape"></div>
 
       <div class="dash">
       <div class="stage" id="stage">
@@ -116,8 +118,6 @@
     <section id="tab-2d" class="panel" role="tabpanel" aria-labelledby="t-2d" hidden>
       <h1>Flat 2D Shapes</h1>
       <p class="note"><span class="ico" aria-hidden="true">i</span><span>Flat shapes have sides and corners but no thickness. Pick a shape, then tap <b>Sides</b> or <b>Corners</b> to count them.</span></p>
-
-      <div class="picker pills" id="pills2d" role="listbox" aria-label="Choose a 2D shape"></div>
 
       <div class="dash">
       <div class="stage two">
