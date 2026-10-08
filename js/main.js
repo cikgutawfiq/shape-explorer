@@ -106,7 +106,7 @@ function selectShape(id, { keepView = false } = {}) {
   const sides = state.sides[id] ?? s.defaultSides;
   const counts = viewer.setShape(id, sides, { keepFold: false, keepView });
   el.select.value = id;
-  $('#picker button').forEach((b) => b.setAttribute('aria-selected', b.dataset.id === id));
+  $$('#picker button').forEach((b) => b.setAttribute('aria-selected', b.dataset.id === id));
   const on = $('#picker button[aria-selected="true"]');
   if (on) el.picker.scrollTo({ left: on.offsetLeft - (el.picker.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' });
   el.sidesField.hidden = !s.hasSides;

@@ -180,19 +180,21 @@ export function initShapes2D({ go3d }) {
     t.textContent = n;
   }
 
-  function select(id) {
+  function select(id, silent = false) {
     cur = SHAPES_2D.find((s) => s.id === id) || SHAPES_2D[0];
     stopCount();
     draw();
     // clear any old right-angle marks visibility
     pills.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', b.dataset.id === cur.id));
+    const onPill = pills.querySelector('button[aria-selected="true"]');
+    if (onPill) pills.scrollTo({ left: onPill.offsetLeft - (pills.clientWidth - onPill.offsetWidth) / 2, behavior: 'smooth' });
     hud.querySelectorAll('.chip').forEach(hideCount);
     document.getElementById('name2d').textContent = cur.name;
     document.getElementById('blurb2d').textContent = cur.blurb;
     document.getElementById('examples2d').innerHTML = cur.examples.map(([e, t]) => `<li><span class="em" aria-hidden="true">${e}</span>${t}</li>`).join('');
     const goto = document.getElementById('goto3d');
     goto.innerHTML = cur.in3d.map(([sid, text]) => `<li><button data-id="${sid}"><span>${byId(sid).icon} ${text}</span><span aria-hidden="true">→</span></button></li>`).join('');
-    if (location.hash.startsWith('#2d')) history.replaceState(null, '', `#2d/${cur.id}`);
+    if (!silent && location.hash.startsWith('#2d')) history.replaceState(null, '', `#2d/${cur.id}`);
   }
 
   hud.addEventListener('click', (e) => {
@@ -206,7 +208,7 @@ export function initShapes2D({ go3d }) {
     if (b) go3d(b.dataset.id);
   });
 
-  select('triangle');
+  select('triangle', true);
   return {
     select: (id) => select(id || cur.id),
     show: () => {},

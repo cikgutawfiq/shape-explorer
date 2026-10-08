@@ -493,3 +493,56 @@ html, body { max-width: 100%; overflow-x: clip; }
   .mem.hard .mem-card .front .em { font-size: clamp(1.8rem, 2.6vw, 3rem); }
 }
 @media (min-width: 900px) { .match .col { gap: 10px; } .m-item { font-size: 1.15rem; min-height: 54px; } }
+
+/* ---------- v4: stage toolbar on top, title + intro on one row ---------- */
+.head { display: block; }
+#stage {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "hud tools" "canvas canvas" "bar bar"; grid-template-rows: auto minmax(0, 1fr) auto;
+}
+#stage > .hud { grid-area: hud; position: static; padding: 10px 0 10px 12px; align-self: center; pointer-events: auto; }
+#stage > .tools { grid-area: tools; position: static; flex-direction: row; padding: 10px 12px 10px 0; align-self: center; }
+#stage > .gl-host { grid-area: canvas; border-top: 1px solid var(--line); }
+#stage > .bar { grid-area: bar; }
+.tool { width: 40px; height: 40px; }
+
+@media (max-width: 520px) {
+  #stage > .hud { padding: 8px 0 8px 10px; }
+  #stage > .tools { padding: 8px 10px 8px 0; gap: 6px; }
+  .tool { width: 36px; height: 36px; border-radius: 10px; }
+  .tool svg { width: 20px; height: 20px; }
+  #stage > .gl-host { height: clamp(250px, 40dvh, 440px); }
+}
+
+@media (min-width: 1100px) {
+  .head { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 22px; }
+  .head h1 { margin: 0; white-space: nowrap; }
+  .head .note { margin: 0; max-width: none; flex: 1 1 420px; }
+  #stage { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "hud bar tools" "canvas canvas canvas"; grid-template-rows: auto minmax(0, 1fr); }
+  #stage > .bar { border: 0; background: transparent; padding: 8px 14px; align-self: center; gap: 4px 22px; grid-template-columns: auto minmax(180px, 1fr) auto minmax(140px, 200px); }
+  #stage > .bar .field.pick select { min-height: 42px; padding-block: 5px; min-width: 130px; }
+  #stage > .bar .play { min-height: 42px; padding-block: 5px; }
+}
+@media (min-width: 1100px) and (min-height: 620px) {
+  .panel { grid-template-rows: auto minmax(0, 1fr); }
+  .panel .head { grid-column: 1; grid-row: 1; margin: 0 0 10px; }
+  .stage { grid-row: 2; }
+  .dash .cards { grid-row: 1 / 3; }
+  #tab-quiz .games { grid-row: 2; }
+}
+
+@media (min-width: 1100px) {
+  #stage > .bar { display: flex; align-items: center; gap: 12px 22px; }
+  #stage > .bar .field { grid-column: auto; grid-row: auto; }
+  #stage > .bar .field.fold { flex: 1 1 200px; min-width: 0; }
+  #stage > .bar .field.sides { flex: 0 0 180px; }
+  #stage > .bar .play { flex: none; }
+  #stage > .bar .field.pick { flex: 0 0 150px; }
+  /* the header already has the shape picker; keep the dropdown for full screen only */
+  #stage:not(:fullscreen):not(.is-fs) > .bar .field.pick { display: none; }
+}
+
+@media (min-width: 1100px) {
+  .hdr-pick .picker button { padding: 9px clamp(10px, .95vw, 18px); font-size: clamp(.86rem, .98vw, 1.05rem); letter-spacing: .05em; }
+  .hdr-pick .picker.pills button { padding: 9px clamp(10px, .95vw, 18px); }
+}

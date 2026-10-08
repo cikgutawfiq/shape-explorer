@@ -37,28 +37,30 @@
   <main id="main">
     <!-- ============================== 3D ============================== -->
     <section id="tab-3d" class="panel" role="tabpanel" aria-labelledby="t-3d">
+      <div class="head">
       <h1>Unfolding Shapes in 3D</h1>
       <p class="note"><span class="ico" aria-hidden="true">i</span><span class="long">Explore the geometry of prisms, pyramids, cylinders and cones by unfolding them. Drag to spin the shape, pinch or scroll to zoom, then tap <b>Faces</b>, <b>Edges</b> or <b>Vertices</b> to count them.</span><span class="short">Drag to spin, pinch to zoom, and tap <b>Faces</b>, <b>Edges</b> or <b>Vertices</b> to count.</span></p>
+      </div>
 
       <div class="dash">
       <div class="stage" id="stage">
+        <div class="hud" id="hud">
+          <button class="chip" data-kind="faces"><b>0</b><span>Faces</span></button>
+          <button class="chip" data-kind="edges"><b>0</b><span>Edges</span></button>
+          <button class="chip" data-kind="vertices"><b>0</b><span>Vertices</span></button>
+          <button class="chip" data-kind="curved"><b>0</b><span>Curved</span></button>
+        </div>
+        <div class="tools">
+          <button class="tool" id="btnFull" aria-label="Full screen" title="Full screen">
+            <svg viewBox="0 0 24 24" class="i-enter"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 24 24" class="i-exit"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="tool" id="btnReset" aria-label="Reset view" title="Reset view">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
         <div class="gl-host" id="glHost">
           <div class="labels" id="labels" aria-hidden="true"></div>
-          <div class="hud" id="hud">
-            <button class="chip" data-kind="faces"><b>0</b><span>Faces</span></button>
-            <button class="chip" data-kind="edges"><b>0</b><span>Edges</span></button>
-            <button class="chip" data-kind="vertices"><b>0</b><span>Vertices</span></button>
-            <button class="chip" data-kind="curved"><b>0</b><span>Curved</span></button>
-          </div>
-          <div class="tools">
-            <button class="tool" id="btnFull" aria-label="Full screen" title="Full screen">
-              <svg viewBox="0 0 24 24" class="i-enter"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <svg viewBox="0 0 24 24" class="i-exit"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <button class="tool" id="btnReset" aria-label="Reset view" title="Reset view">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-            </button>
-          </div>
           <div class="toast" id="toast" role="status" aria-live="polite"></div>
           <p class="nogl" id="noGl" hidden>Your browser could not start 3D graphics. Try updating it, or open this page in Chrome, Edge, Safari or Firefox.</p>
         </div>
@@ -116,8 +118,10 @@
 
     <!-- ============================== 2D ============================== -->
     <section id="tab-2d" class="panel" role="tabpanel" aria-labelledby="t-2d" hidden>
+      <div class="head">
       <h1>Flat 2D Shapes</h1>
       <p class="note"><span class="ico" aria-hidden="true">i</span><span>Flat shapes have sides and corners but no thickness. Pick a shape, then tap <b>Sides</b> or <b>Corners</b> to count them.</span></p>
+      </div>
 
       <div class="dash">
       <div class="stage two">
@@ -161,8 +165,10 @@
 
     <!-- ============================== QUIZ ============================== -->
     <section id="tab-quiz" class="panel" role="tabpanel" aria-labelledby="t-quiz" hidden>
+      <div class="head">
       <h1>Shape Games</h1>
       <p class="note"><span class="ico" aria-hidden="true">i</span><span>Play a quiz, flip memory cards or match shapes to their clues. Not sure? Go back and explore the shape first!</span></p>
+      </div>
       <div class="card games" id="games"></div>
     </section>
   </main>
